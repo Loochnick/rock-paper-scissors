@@ -9,13 +9,7 @@ import {
 
 import { gameState } from "./gameState.js";
 
-import { delay, Logger } from "./utils.js";
-
-// Function to log player and computer choices
-const logSelections = (playerSelection, computerSelection) => {
-  Logger.info(`You chose: ${CHOICES[playerSelection].name}`);
-  Logger.info(`Computer chose: ${CHOICES[computerSelection].name}`);
-};
+import { delay, Logger, validateSelections, logSelections } from "./utils.js";
 
 const computerPlay = () => {
   const choices = Object.keys(CHOICES);
@@ -45,12 +39,6 @@ const displayFinalResult = (playerScore, computerScore) => {
   } else {
     Logger.log(FINAL_RESULT_MESSAGES.tie);
   }
-};
-
-const validateSelections = (playerSelection, computerSelection) => {
-  let isValid = playerSelection in CHOICES && computerSelection in CHOICES;
-
-  return isValid;
 };
 
 const game = () => {
