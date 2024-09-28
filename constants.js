@@ -27,6 +27,7 @@ export const GAME_FLOW_MESSAGES = {
   `,
   thanksForPlaying: "Thanks for playing!",
   gameCancelled: "The game has been cancelled",
+  unexpectedError: "An unexpected error occurred: ",
 };
 
 export const ROUND_OUTCOME_MESSAGES = {

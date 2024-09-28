@@ -47,68 +47,72 @@ const game = () => {
   let computerScore = 0;
   let round = 1;
 
-  //Welcome Message(only for the first round)
-  !gameState.shouldRestart && alert(GAME_FLOW_MESSAGES.welcome);
+  try {
+    //Welcome Message(only for the first round)
+    !gameState.shouldRestart && alert(GAME_FLOW_MESSAGES.welcome);
 
-  // Play rounds
-  while (round <= TOTAL_ROUNDS) {
-    Logger.log(`Round ${round}:`);
+    // Play rounds
+    while (round <= TOTAL_ROUNDS) {
+      Logger.log(`Round ${round}:`);
 
-    // Get selections
-    const playerSelection = prompt(PROMPT_MESSAGES.playerChoice);
-    const computerSelection = computerPlay();
+      // Get selections
+      const playerSelection = prompt(PROMPT_MESSAGES.playerChoice);
+      const computerSelection = computerPlay();
 
-    // Check if the player canceled the game
-    if (playerSelection === null) {
-      isGameCancelled = true;
-      Logger.warn(GAME_FLOW_MESSAGES.gameCancelled);
-      break;
-    }
-
-    // Make both selections lower case
-    const playerSelectionLower = playerSelection.toLowerCase();
-    const computerSelectionLower = computerSelection.toLowerCase();
-
-    // Validate both selections
-    const isSelectionsValid = validateSelections(
-      playerSelectionLower,
-      computerSelectionLower
-    );
-
-    if (isSelectionsValid) {
-      // Play one round and get the result
-      const resultMessage = playRound(
-        playerSelectionLower,
-        computerSelectionLower
-      );
-
-      // Display the result of the round
-      Logger.log(resultMessage);
-
-      // Update score based on the outcome
-      if (resultMessage.includes(ROUND_OUTCOME_MESSAGES.win)) {
-        playerScore++;
-      } else if (resultMessage.includes(ROUND_OUTCOME_MESSAGES.lose)) {
-        computerScore++;
+      // Check if the player canceled the game
+      if (playerSelection === null) {
+        isGameCancelled = true;
+        Logger.warn(GAME_FLOW_MESSAGES.gameCancelled);
+        break;
       }
 
-      // Show current score
-      Logger.info(`Score: Player ${playerScore}, Computer ${computerScore}`);
+      // trim and Make player selection lower case
+      const playerSelectionLower = playerSelection.trim().toLowerCase();
 
-      round++;
-    } else {
-      Logger.error(ROUND_OUTCOME_MESSAGES.invalidChoice);
+      // Validate both selections
+      const isSelectionsValid = validateSelections(
+        playerSelectionLower,
+        computerSelection
+      );
+
+      if (isSelectionsValid) {
+        // Play one round and get the result
+        const resultMessage = playRound(
+          playerSelectionLower,
+          computerSelection
+        );
+
+        // Display the result of the round
+        Logger.log(resultMessage);
+
+        // Update score based on the outcome
+        if (resultMessage.includes(ROUND_OUTCOME_MESSAGES.win)) {
+          playerScore++;
+        } else if (resultMessage.includes(ROUND_OUTCOME_MESSAGES.lose)) {
+          computerScore++;
+        }
+
+        // Show current score
+        Logger.info(`Score: Player ${playerScore}, Computer ${computerScore}`);
+
+        round++;
+      } else {
+        Logger.error(ROUND_OUTCOME_MESSAGES.invalidChoice);
+      }
     }
+
+    // Determine and display the final result
+    !isGameCancelled && displayFinalResult(playerScore, computerScore);
+
+    //restarting the game
+    gameState.shouldRestart = confirm(PROMPT_MESSAGES.tryAgain);
+    gameState.shouldRestart
+      ? game()
+      : Logger.log(GAME_FLOW_MESSAGES.thanksForPlaying);
+  } catch (error) {
+    Logger.error(GAME_FLOW_MESSAGES.unexpectedError + error.message);
   }
-
-  // Determine and display the final result
-  !isGameCancelled && displayFinalResult(playerScore, computerScore);
-
-  //restarting the game
-  gameState.shouldRestart = confirm(PROMPT_MESSAGES.tryAgain);
-  gameState.shouldRestart
-    ? game()
-    : Logger.log(GAME_FLOW_MESSAGES.thanksForPlaying);
 };
 
+// Start the game after a delay
 delay(1000).then(() => game());
