@@ -124,6 +124,10 @@ const updateStateAfterMatch = (state, matchResult) => {
 };
 
 const game = (state) => {
+
+  //Welcome message(only for the first time)
+  state.currentMatch.matchNumber === 1 && Logger.log(GAME_FLOW_MESSAGES.welcome);
+
   // Notify the player which match they are currently playing
   Logger.warn(`Match ${state.currentMatch.matchNumber}`);
 
@@ -206,25 +210,14 @@ const game = (state) => {
     : Logger.log(GAME_FLOW_MESSAGES.thanksForPlaying);
 };
 
-const startGameWithDelay = async (state) => {
-  const { matchNumber } = state.currentMatch;
+document.addEventListener("DOMContentLoaded", () => {
+  //Get the initilized State
+  const state = loadStateFromLocalStorage();
 
   try {
-    await delay(GAME_INITIAL_DELAY);
-
-    //Welcome message(only for the first time)
-    matchNumber === 1 && Logger.log(GAME_FLOW_MESSAGES.welcome);
-
     //play
     game(state);
   } catch (error) {
     Logger.error(GAME_FLOW_MESSAGES.unexpectedError + error.message);
   }
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-  //Get the initilized State
-  const state = loadStateFromLocalStorage();
-
-  startGameWithDelay(state);
 });
