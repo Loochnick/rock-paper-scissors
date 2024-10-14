@@ -5,7 +5,6 @@ import {
   MATCH_RESULT_MESSAGES,
   TOTAL_ROUNDS,
   GAME_FLOW_MESSAGES,
-  GAME_INITIAL_DELAY,
   RESULTS,
   MATCH_RESULT_CONFIG,
 } from "./constants.js";
@@ -19,7 +18,6 @@ import {
 } from "./stateManager.js";
 
 import {
-  delay,
   Logger,
   validateSelections,
   logSelections,
@@ -124,9 +122,9 @@ const updateStateAfterMatch = (state, matchResult) => {
 };
 
 const game = (state) => {
-
   //Welcome message(only for the first time)
-  state.currentMatch.matchNumber === 1 && Logger.log(GAME_FLOW_MESSAGES.welcome);
+  state.currentMatch.matchNumber === 1 &&
+    Logger.log(GAME_FLOW_MESSAGES.welcome);
 
   // Notify the player which match they are currently playing
   Logger.warn(`Match ${state.currentMatch.matchNumber}`);
@@ -210,14 +208,12 @@ const game = (state) => {
     : Logger.log(GAME_FLOW_MESSAGES.thanksForPlaying);
 };
 
-document.addEventListener("DOMContentLoaded", () => {
-  //Get the initilized State
-  const state = loadStateFromLocalStorage();
+//Get the initilized State
+const state = loadStateFromLocalStorage();
 
-  try {
-    //play
-    game(state);
-  } catch (error) {
-    Logger.error(GAME_FLOW_MESSAGES.unexpectedError + error.message);
-  }
-});
+try {
+  //play
+  game(state);
+} catch (error) {
+  Logger.error(GAME_FLOW_MESSAGES.unexpectedError + error.message);
+}
